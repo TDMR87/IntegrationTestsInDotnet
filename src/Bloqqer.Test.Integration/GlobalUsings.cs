@@ -1,0 +1,17 @@
+﻿global using Microsoft.AspNetCore.Mvc.Testing;
+global using Bloqqer.Database;
+global using DotNet.Testcontainers.Builders;
+global using DotNet.Testcontainers.Containers;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.AspNetCore.TestHost;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Bloqqer.Database.Entities;
+global using Bloqqer.Services.Services;
+global using Bloqqer.Test.Integration;
+global using System.Net.Http.Json;
+global using Bloqqer.Api.Models;
+global using System.Net;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;

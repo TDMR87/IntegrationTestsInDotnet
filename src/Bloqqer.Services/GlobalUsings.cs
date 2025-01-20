@@ -1,0 +1,9 @@
+﻿global using Bloqqer.Database.Entities;
+global using Bloqqer.Services.Dto;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.IdentityModel.Tokens;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Text;
+global using Bloqqer.Database;
+global using Microsoft.EntityFrameworkCore;
