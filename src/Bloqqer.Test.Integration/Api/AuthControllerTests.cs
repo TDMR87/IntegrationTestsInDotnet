@@ -1,5 +1,4 @@
-﻿
-namespace Bloqqer.Test.Integration.Api;
+﻿namespace Bloqqer.Test.Integration.Api;
 
 public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTestBase(Fixture)
 {
@@ -35,7 +34,7 @@ public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTe
         Assert.NotNull(loginResponse.Jwt);
 
         var token = new JwtSecurityTokenHandler().ReadJwtToken(loginResponse.Jwt);
-        Assert.Contains(token.Claims, c => c.Type == "userid" && c.Value == user.Id.ToString());
+        Assert.Contains(token.Claims, c => c.Type == "userid" && c.Value == user.UserId.ToString());
         Assert.Contains(token.Claims, c => c.Type == "username" && c.Value == user.Username);
         Assert.Contains(token.Claims, c => c.Type == "email" && c.Value == user.Email);
 

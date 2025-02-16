@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
 using Bloqqer.Services.Validators;
+using Bloqqer.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -8,6 +9,7 @@ builder.Logging.AddConsole();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddExceptionHandler<BloqqerExceptionHandler>();
 builder.Services.AddValidatorsFromAssemblyContaining<ArticleCreateValidator>();
 builder.Services.AddProblemDetails();

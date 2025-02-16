@@ -37,7 +37,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
             TestContext.Current.CancellationToken);
 
         // Act
-        var response = await BloqqerApiClient.GetAsync($"api/user/id/{user.Id}", 
+        var response = await BloqqerApiClient.GetAsync($"api/user/id/{user.UserId}", 
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -48,7 +48,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(userResponse);
-        Assert.Equal(user.Id.Value, userResponse.Id);
+        Assert.Equal(user.UserId.Value, userResponse.Id);
         Assert.Equal(user.Username, userResponse.Username);
         Assert.Equal(user.Email, userResponse.Email);
     }
@@ -96,7 +96,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(userResponse);
-        Assert.Equal(user.Id.Value, userResponse.Id);
+        Assert.Equal(user.UserId.Value, userResponse.Id);
         Assert.Equal(user.Username, userResponse.Username);
         Assert.Equal(user.Email, userResponse.Email);
     }
@@ -142,7 +142,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
         var updateRequest = new UserUpdateRequest(Username: "UpdatedUsername");
 
         // Act
-        var response = await client.PutAsJsonAsync($"api/user/{user.Id}", 
+        var response = await client.PutAsJsonAsync($"api/user/{user.UserId}", 
             updateRequest, TestContext.Current.CancellationToken);
 
         // Assert
@@ -195,7 +195,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
         var updateRequest = new UserUpdateRequest(Username: "UpdatedUsername");
 
         // Act (updating the user as another user)
-        var response = await BloqqerApiClient.PutAsJsonAsync($"api/user/{user.Id}", 
+        var response = await BloqqerApiClient.PutAsJsonAsync($"api/user/{user.UserId}", 
             updateRequest, TestContext.Current.CancellationToken);
 
         // Assert

@@ -9,47 +9,33 @@ public class BloqqerExceptionHandler(ILogger<BloqqerExceptionHandler> logger) : 
 
         ProblemDetails problemDetails = exception switch
         {
-            BloqqerUnauthorizedException validationException => new ProblemDetails
-            {
-                Status = (int)HttpStatusCode.Unauthorized,
-                Type = validationException.GetType().Name,
-                Title = "Unauthorized",
-                Detail = validationException.Message
-            },
-
-            BloqqerValidationException validationException => new ProblemDetails
-            {
-                Status = (int)HttpStatusCode.BadRequest,
-                Type = validationException.GetType().Name,
-                Title = "Bad Request",
-                Detail = validationException.Message,
-            },
-
-            BloqqerNotFoundException notFoundException => new ProblemDetails
-            {
-                Status = (int)HttpStatusCode.NotFound,
-                Type = notFoundException.GetType().Name,
-                Title = "Not Found",
-                Detail = notFoundException.Message
-            },
-
-            _ => new ProblemDetails
-            {
-                Status = (int)HttpStatusCode.InternalServerError,
-                Type = exception.GetType().Name,
-                Title = $"An unexpected error occurred",
-                Detail = $"{exception.Message}. This error has been logged with an error id of {errorId}"
-            }
+            BloqqerUnauthorizedException => exception.ToProblemDetails(HttpStatusCode.Unauthorized, "Unauthorized"),
+            BloqqerValidationException => exception.ToProblemDetails(HttpStatusCode.BadRequest, "Bad request"),
+            BloqqerNotFoundException => exception.ToProblemDetails(HttpStatusCode.NotFound, "Not Found"),
+            _ => exception.ToProblemDetails(HttpStatusCode.InternalServerError, "An unexpected error occurred",
+                $"{exception.Message}. This error has been logged with an error id of {errorId}")
         };
 
-        logger.LogError("An error occurred at {time} UTC. Error id = {errorId}. {error}",
-            utcNow,
-            errorId,
-            exception.ToString());
+        logger.LogError(exception, "An error occurred at {time} UTC. Error id = {errorId}", utcNow, errorId);
 
         httpContext.Response.StatusCode = problemDetails.Status ?? 500;
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
         return true;
     }
-}  
+}
+
+public static class BloqqerExceptionHandlingExtensions
+{
+    public static ProblemDetails ToProblemDetails(
+        this Exception e, 
+        HttpStatusCode 
+        statusCode, string title, 
+        string? details = null) => new()
+    {
+        Status = (int)statusCode,
+        Title = title,
+        Type = e.GetType().Name,
+        Detail = details ?? e.Message
+    };
+}

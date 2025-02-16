@@ -12,6 +12,24 @@ namespace Bloqqer.Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "UserRegistrationConfirmation",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConfirmationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiresUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRegistrationConfirmation", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -63,6 +81,9 @@ namespace Bloqqer.Database.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Article");
+
+            migrationBuilder.DropTable(
+                name: "UserRegistrationConfirmation");
 
             migrationBuilder.DropTable(
                 name: "Users");

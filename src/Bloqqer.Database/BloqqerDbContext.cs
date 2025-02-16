@@ -4,6 +4,7 @@ public class BloqqerDbContext(DbContextOptions<BloqqerDbContext> options) : DbCo
 {
     public required DbSet<Article> Articles { get; set; }
     public required DbSet<User> Users { get; set; }
+    public required DbSet<UserRegistrationConfirmation> UserRegistrationConfirmations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

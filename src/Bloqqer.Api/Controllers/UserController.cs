@@ -13,7 +13,7 @@ public class UserController(IUserService userService) : BloqqerControllerBase
             cancellationToken);
 
         return Ok(new UserResponse(
-            Id: user.Id.Value,
+            Id: user.UserId.Value,
             Username: user.Username,
             Email: user.Email));
     }
@@ -24,7 +24,7 @@ public class UserController(IUserService userService) : BloqqerControllerBase
         var user = await userService.GetByIdAsync(new UserId(CurrentUserId), cancellationToken);
 
         return Ok(new UserResponse(
-            Id: user.Id.Value,
+            Id: user.UserId.Value,
             Username: user.Username,
             Email: user.Email));
     }
@@ -35,7 +35,7 @@ public class UserController(IUserService userService) : BloqqerControllerBase
         var user = await userService.GetByIdAsync(new UserId(id), cancellationToken);
 
         return Ok(new UserResponse(
-            Id: user.Id.Value,
+            Id: user.UserId.Value,
             Username: user.Username,
             Email: user.Email));
     }
@@ -46,7 +46,7 @@ public class UserController(IUserService userService) : BloqqerControllerBase
         var user = await userService.GetByEmailAsync(email, cancellationToken);
 
         return Ok(new UserResponse(
-            Id: user.Id.Value,
+            Id: user.UserId.Value,
             Username: user.Username,
             Email: user.Email));
     }
@@ -60,7 +60,7 @@ public class UserController(IUserService userService) : BloqqerControllerBase
             UpdatedById: new UserId(CurrentUserId)), cancellationToken);
 
         return Ok(new UserResponse(
-            Id: user.Id.Value,
+            Id: user.UserId.Value,
             Username: user.Username,
             Email: user.Email));
     }

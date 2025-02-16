@@ -78,16 +78,16 @@ public class ArticleServiceTests(IntegrationTestFixture _) : IntegrationTestBase
             TestContext.Current.CancellationToken);
 
         var article1 = await ArticleService.CreateAsync(
-            new ArticleCreateDto(Content: "Content 1", CreatedById: user.Id),
+            new ArticleCreateDto(Content: "Content 1", CreatedById: user.UserId),
             TestContext.Current.CancellationToken);
 
         var article2 = await ArticleService.CreateAsync(
-            new ArticleCreateDto(Content: "Content 2", CreatedById: user.Id),
+            new ArticleCreateDto(Content: "Content 2", CreatedById: user.UserId),
             TestContext.Current.CancellationToken);
 
         // Act
         var result = await ArticleService.GetAllByUserIdAsync(
-            userId: user.Id, 
+            userId: user.UserId, 
             includeDeleted: false,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -96,7 +96,7 @@ public class ArticleServiceTests(IntegrationTestFixture _) : IntegrationTestBase
         Assert.NotEmpty(result);
         Assert.Contains(result, a => a.Id == article1.Id);
         Assert.Contains(result, a => a.Id == article2.Id);
-        Assert.Equal(result.Count, DbContext.Articles.Count(a => a.CreatedById == user.Id));
+        Assert.Equal(result.Count, DbContext.Articles.Count(a => a.CreatedById == user.UserId));
     }
 
     [Fact]
@@ -110,7 +110,7 @@ public class ArticleServiceTests(IntegrationTestFixture _) : IntegrationTestBase
 
         // Act
         var result = await ArticleService.GetAllByUserIdAsync(
-            userId: user.Id,
+            userId: user.UserId,
             includeDeleted: false,
             cancellationToken: TestContext.Current.CancellationToken);
 
@@ -156,7 +156,7 @@ public class ArticleServiceTests(IntegrationTestFixture _) : IntegrationTestBase
 
         var article = await ArticleService.CreateAsync(new ArticleCreateDto(
             Content: "Original Content", 
-            CreatedById: user.Id),
+            CreatedById: user.UserId),
             TestContext.Current.CancellationToken);
 
         var updateDto = new ArticleUpdateDto(
@@ -218,7 +218,7 @@ public class ArticleServiceTests(IntegrationTestFixture _) : IntegrationTestBase
 
         var article = await ArticleService.CreateAsync(new ArticleCreateDto(
             Content: "Test Content",
-            CreatedById: user.Id),
+            CreatedById: user.UserId),
             TestContext.Current.CancellationToken);
 
         var deleteDto = new ArticleDeleteDto(

@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Headers;
-
-[assembly: AssemblyFixture(typeof(IntegrationTestFixture))]
+﻿[assembly: AssemblyFixture(typeof(IntegrationTestFixture))]
 
 namespace Bloqqer.Test.Integration;
 
@@ -11,6 +9,10 @@ public class IntegrationTestFixture
     private const string DbUser = "sa";
     private const string DbPassword = "$trongP4ssword";
     private const int DbPort = 1433;
+
+    private const string ApiTestUserEmail = "integration.test.user@bloqqer.net";
+    private const string ApiTestUserName = "integration.test.user";
+    private const string ApiTestUserPassword = "Pa55w0rd123";
 
     public IntegrationTestFixture()
     {
@@ -44,22 +46,15 @@ public class IntegrationTestFixture
         using var dbContext = ScopedServiceProvider.GetRequiredService<BloqqerDbContext>();
         dbContext.Database.Migrate();
 
-        // Create a test user
-        dbContext.Users.Add(new()
-        {
-            Username = "Integration Test User",
-            Email = "integration.test@bloqqer.net"
-        });
-        dbContext.SaveChanges();
-
-        // Log in the test user to get a JWT
+        // Register & login the test user
         var authService = ScopedServiceProvider.GetRequiredService<IAuthService>();
-        var loginDto = authService.LoginAsync(new("integration.test.user@bloqqer.net", "P@ssw0rd")).Result;
+        var confirmationCode = authService.RegisterAsync(new(ApiTestUserEmail)).Result;
+        var registeredUser = authService.ConfirmRegistrationAsync(new(confirmationCode, ApiTestUserName, ApiTestUserPassword)).Result;
+        var (_, Jwt) = authService.LoginAsync(new(registeredUser.Email, ApiTestUserPassword)).Result;
 
-        // Instantiate an HTTP client and attach the JWT to the headers
-        // in order to call Bloqqer.Api authorized endpoints
+        // Set the JWT for the HttpClient
         BloqqerApiClient = WebApplicationFactory.CreateClient();
-        BloqqerApiClient.DefaultRequestHeaders.Authorization = new("Bearer", loginDto.Jwt);
+        BloqqerApiClient.DefaultRequestHeaders.Authorization = new("Bearer", Jwt);
     }
 
     /// <summary>

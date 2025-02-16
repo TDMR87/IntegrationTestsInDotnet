@@ -23,7 +23,7 @@ public class UserService(
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return new(
-            Id: entity.Id,
+            UserId: entity.Id,
             Username: entity.Username,
             Email: entity.Email);
     }
@@ -35,7 +35,7 @@ public class UserService(
             ?? throw new BloqqerNotFoundException($"User with email {email} not found");
 
         return new(
-            Id: user.Id,
+            UserId: user.Id,
             Username: user.Username,
             Email: user.Email);
     }
@@ -46,7 +46,7 @@ public class UserService(
             ?? throw new BloqqerNotFoundException($"User with ID {id} not found");
 
         return new(
-            Id: user.Id,
+            UserId: user.Id,
             Username: user.Username,
             Email: user.Email);
     }
@@ -72,7 +72,7 @@ public class UserService(
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return new(
-            Id: user.Id,
+            UserId: user.Id,
             Username: user.Username,
             Email: user.Email);
     }

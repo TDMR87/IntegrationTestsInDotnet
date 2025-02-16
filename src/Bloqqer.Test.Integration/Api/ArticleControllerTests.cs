@@ -184,14 +184,14 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
 
         // Act
         var articlesResponse = await BloqqerApiClient.GetFromJsonAsync<List<ArticleResponse>>(
-            $"api/article/user/{user.Id}/all",
+            $"api/article/user/{user.UserId}/all",
             DisallowUnmappedMembers,
             TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(articlesResponse);
         Assert.Empty(articlesResponse);
-        Assert.Equal(articlesResponse.Count, DbContext.Articles.Where(a => a.CreatedById == user.Id).Count());
+        Assert.Equal(articlesResponse.Count, DbContext.Articles.Where(a => a.CreatedById == user.UserId).Count());
     }
 
     [Fact]
@@ -279,7 +279,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
 
         var article = await ArticleService.CreateAsync(new(
              Content: "content",
-             CreatedById: user.Id),
+             CreatedById: user.UserId),
              TestContext.Current.CancellationToken);
 
         // Act (updating the article as the integration test user)

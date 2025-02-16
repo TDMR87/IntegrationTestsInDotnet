@@ -23,7 +23,7 @@ public class AuthServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
         // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Jwt);
-        Assert.Equal(user.Id, result.LoggedInUser.Id);
+        Assert.Equal(user.UserId, result.LoggedInUser.UserId);
         Assert.Equal(user.Username, result.LoggedInUser.Username);
         Assert.Equal(user.Email, result.LoggedInUser.Email);
     }
@@ -51,7 +51,7 @@ public class AuthServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
         Assert.NotNull(result);
         Assert.NotNull(result.Jwt);
         var token = new JwtSecurityTokenHandler().ReadJwtToken(result.Jwt);
-        Assert.Contains(token.Claims, c => c.Type == "userid" && c.Value == user.Id.ToString());
+        Assert.Contains(token.Claims, c => c.Type == "userid" && c.Value == user.UserId.ToString());
         Assert.Contains(token.Claims, c => c.Type == "username" && c.Value == user.Username);
         Assert.Contains(token.Claims, c => c.Type == "email" && c.Value == user.Email);
 
@@ -61,21 +61,50 @@ public class AuthServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
     }
 
     [Fact]
-    public async Task LoginAsync_Should_CreateUser_And_ReturnLoginResponseDto_WhenUserDoesNotExist()
+    public async Task RegisterAsync_Should_CreateConfirmationCode_And_SendEmail()
+    {
+        // Arrange
+        var registrationEmail = $"{Guid.NewGuid()}@bloqqer.net";
+
+        // Act
+        await AuthService.RegisterAsync(new(registrationEmail), TestContext.Current.CancellationToken);
+
+        // Assert. Verify the confirmation was created in the database
+        var confirmation = await DbContext.UserRegistrationConfirmations.FirstOrDefaultAsync(
+            u => u.Email == registrationEmail, 
+            TestContext.Current.CancellationToken);
+
+        Assert.NotNull(confirmation);
+        Assert.Equal(registrationEmail, confirmation.Email);
+    }
+
+    [Fact]
+    public async Task RegisterAsync_Should_ThrowValidationException_WhenEmailAlreadyExists()
     {
         // Arrange
         var username = $"User_{Guid.NewGuid()}";
         var email = $"{Guid.NewGuid()}@bloqqer.net";
-        var password = Guid.NewGuid().ToString();
-        var loginDto = new LoginRequestDto(email, Password: password);
 
-        // Act
-        var result = await AuthService.LoginAsync(loginDto, TestContext.Current.CancellationToken);
+        await UserService.CreateAsync(new(username, email), TestContext.Current.CancellationToken);
 
-        // Verify the user was created in the database
-        var userInDb = await DbContext.Users.FirstOrDefaultAsync(u => u.Email == email, TestContext.Current.CancellationToken);
-        Assert.NotNull(userInDb);
-        Assert.Equal(email, userInDb.Email);
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<BloqqerValidationException>(() =>
+            AuthService.RegisterAsync(new(email), TestContext.Current.CancellationToken));
+
+        Assert.Contains("Email is already taken", exception.Message);
+    }
+
+    [Fact]
+    public async Task RegisterAsync_Should_ThrowValidationException_WhenEmailIsEmpty()
+    {
+        // Arrange
+        var dto = new RegisterRequestDto(Email: string.Empty);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<BloqqerValidationException>(() =>
+            AuthService.RegisterAsync(dto, TestContext.Current.CancellationToken));
+
+        Assert.Contains("Email is required", exception.Message);
     }
 
     [Fact]

@@ -17,7 +17,7 @@ public class UserServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
         Assert.NotNull(user);
         Assert.Equal(user.Username, dto.Username);
         Assert.Equal(dto.Email, dto.Email);
-        var userInDb = await DbContext.Users.FindAsync(user.Id, TestContext.Current.CancellationToken);
+        var userInDb = await DbContext.Users.FindAsync(user.UserId, TestContext.Current.CancellationToken);
         Assert.NotNull(userInDb);
         Assert.Equal(dto.Username, userInDb.Username);
         Assert.Equal(dto.Email, userInDb.Email);
@@ -39,7 +39,7 @@ public class UserServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(user.Id, result.Id);
+        Assert.Equal(user.UserId, result.UserId);
         Assert.Equal(user.Username, result.Username);
         Assert.Equal(user.Email, result.Email);
     }
@@ -65,11 +65,11 @@ public class UserServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
             TestContext.Current.CancellationToken);
 
         // Act
-        var result = await UserService.GetByIdAsync(user.Id, TestContext.Current.CancellationToken);
+        var result = await UserService.GetByIdAsync(user.UserId, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(user.Id, result.Id);
+        Assert.Equal(user.UserId, result.UserId);
         Assert.Equal(user.Username, result.Username);
         Assert.Equal(user.Email, result.Email);
     }
@@ -95,9 +95,9 @@ public class UserServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
             TestContext.Current.CancellationToken);
 
         var updateDto = new UserUpdateDto(
-            UserId: user.Id,
+            UserId: user.UserId,
             Username: "UpdatedUsername",
-            UpdatedById: user.Id);
+            UpdatedById: user.UserId);
 
         // Act
         var result = await UserService.UpdateAsync(updateDto, TestContext.Current.CancellationToken);
@@ -105,7 +105,7 @@ public class UserServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
         // Assert
         Assert.NotNull(result);
         Assert.Equal(updateDto.Username, result.Username);
-        var updatedUserInDb = await DbContext.Users.FindAsync(user.Id);
+        var updatedUserInDb = await DbContext.Users.FindAsync(user.UserId);
         Assert.NotNull(updatedUserInDb);
         Assert.Equal(updateDto.Username, updatedUserInDb.Username);
     }
@@ -120,9 +120,9 @@ public class UserServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
             TestContext.Current.CancellationToken);
 
         var updateDto = new UserUpdateDto(
-            UserId: user.Id,
+            UserId: user.UserId,
             Username: string.Empty,
-            UpdatedById: user.Id);
+            UpdatedById: user.UserId);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<BloqqerValidationException>(() =>
@@ -141,9 +141,9 @@ public class UserServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
             TestContext.Current.CancellationToken);
 
         var updateDto = new UserUpdateDto(
-            UserId: user.Id,
+            UserId: user.UserId,
             Username: "abc",
-            UpdatedById: user.Id);
+            UpdatedById: user.UserId);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<BloqqerValidationException>(() =>
@@ -162,9 +162,9 @@ public class UserServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
             TestContext.Current.CancellationToken);
 
         var updateDto = new UserUpdateDto(
-            UserId: user.Id,
+            UserId: user.UserId,
             Username: $"User_{Guid.NewGuid()}{Guid.NewGuid()}",
-            UpdatedById: user.Id);
+            UpdatedById: user.UserId);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<BloqqerValidationException>(() =>
@@ -188,9 +188,9 @@ public class UserServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
             TestContext.Current.CancellationToken);
 
         var updateDto = new UserUpdateDto(
-            UserId: user.Id,
+            UserId: user.UserId,
             Username: $"User_{Guid.NewGuid()}",
-            UpdatedById: otherUser.Id);
+            UpdatedById: otherUser.UserId);
 
         // Act & Assert
         await Assert.ThrowsAsync<BloqqerUnauthorizedException>(() =>
