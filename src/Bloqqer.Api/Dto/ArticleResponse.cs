@@ -1,4 +1,4 @@
-﻿namespace Bloqqer.Api.Models;
+﻿namespace Bloqqer.Api.Dto;
 
 public record ArticleResponse(
     Guid Id, 

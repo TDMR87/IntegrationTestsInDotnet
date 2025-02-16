@@ -22,7 +22,7 @@ namespace Bloqqer.Database.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Bloqqer.Database.Entities.Article", b =>
+            modelBuilder.Entity("Bloqqer.Core.Entities.Article", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace Bloqqer.Database.Migrations
                     b.ToTable("Article", (string)null);
                 });
 
-            modelBuilder.Entity("Bloqqer.Database.Entities.User", b =>
+            modelBuilder.Entity("Bloqqer.Core.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -90,9 +90,9 @@ namespace Bloqqer.Database.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("Bloqqer.Database.Entities.Article", b =>
+            modelBuilder.Entity("Bloqqer.Core.Entities.Article", b =>
                 {
-                    b.HasOne("Bloqqer.Database.Entities.User", "CreatedBy")
+                    b.HasOne("Bloqqer.Core.Entities.User", "CreatedBy")
                         .WithMany("Articles")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -101,7 +101,7 @@ namespace Bloqqer.Database.Migrations
                     b.Navigation("CreatedBy");
                 });
 
-            modelBuilder.Entity("Bloqqer.Database.Entities.User", b =>
+            modelBuilder.Entity("Bloqqer.Core.Entities.User", b =>
                 {
                     b.Navigation("Articles");
                 });

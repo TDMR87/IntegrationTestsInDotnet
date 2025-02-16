@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace Bloqqer.Test.Integration.Api;
 
-namespace Bloqqer.Test.Integration.Api;
-
-public class ArticleApiTests(IntegrationTestFixture _) : IntegrationTestBase(_)
+public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestBase(_)
 {
     [Fact]
     public async Task CreateArticle_Should_ReturnCorrectHeaders()

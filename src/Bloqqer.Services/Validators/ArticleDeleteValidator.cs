@@ -1,10 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Bloqqer.Services.Validators;
 
-namespace Bloqqer.Services.Validators;
-internal class ArticleDeleteValidator
+public class ArticleDeleteValidator : AbstractValidator<ArticleDeleteDto>
 {
+    public ArticleDeleteValidator()
+    {
+        RuleFor(x => x.ArticleId)
+            .NotEmpty()
+            .WithMessage("ArticleId is required");
+
+        RuleFor(x => x.DeletedById)
+            .NotEmpty()
+            .WithMessage("DeletedById is required");
+    }
 }

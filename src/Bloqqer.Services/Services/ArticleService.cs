@@ -1,7 +1,4 @@
-﻿using Bloqqer.Core.Exceptions;
-using FluentValidation;
-
-namespace Bloqqer.Services.Services;
+﻿namespace Bloqqer.Services;
 
 public interface IArticleService
 {

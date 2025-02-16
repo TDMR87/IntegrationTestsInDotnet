@@ -37,7 +37,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddDbContext<BloqqerDbContext>(options =>
 {
-    options.AddInterceptors(new TimestampInterceptor());
+    options.AddInterceptors(new BloqqerSaveChangesInterceptor());
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
     options.UseSqlServer(builder.Configuration.GetConnectionString("BloqqerDatabase"));
 });

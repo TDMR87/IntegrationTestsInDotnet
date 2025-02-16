@@ -1,7 +1,4 @@
-﻿using Bloqqer.Core.Exceptions;
-using Bloqqer.Services.Dto;
-
-namespace Bloqqer.Test.Integration.Services;
+﻿namespace Bloqqer.Test.Integration.Services;
 
 public class UserServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
 {

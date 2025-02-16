@@ -1,15 +1,5 @@
 ﻿namespace Bloqqer.Test.Integration.Services;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Bloqqer.Core.Exceptions;
-using Bloqqer.Services.Dto;
-using FluentValidation;
-using Xunit;
-
 public class ArticleServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
 {
     [Fact]

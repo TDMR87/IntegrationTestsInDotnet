@@ -1,4 +1,4 @@
-﻿namespace Bloqqer.Database.Entities;
+﻿namespace Bloqqer.Core.Entities;
 
 public record struct UserId(Guid Value)
 {
@@ -13,6 +13,5 @@ public class User : BloqqerEntityBase
     public required string Email { get; set; }
     public DateTime LastLoginAt { get; set; }
 
-    [NotMapped]
     public const int MaxUsernameLength = 100;
 }

@@ -1,4 +1,6 @@
-﻿[assembly: AssemblyFixture(typeof(IntegrationTestFixture))]
+﻿using System.Net.Http.Headers;
+
+[assembly: AssemblyFixture(typeof(IntegrationTestFixture))]
 
 namespace Bloqqer.Test.Integration;
 
@@ -82,21 +84,21 @@ public class IntegrationTestFixture
     /// <typeparam name="TService"></typeparam>
     /// <param name="mockServices"></param>
     /// <returns></returns>
-    public HttpClient CreateClientWithMockServices<TService>(params List<TService> mockServices) where TService : class
+    public HttpClient CreateClientWithMockServices<TService>(
+        TService mockService) where TService : class
     {
         var client = WebApplicationFactory.WithWebHostBuilder(builder => 
             builder.ConfigureTestServices(services =>
             {
-                foreach (var mockService in mockServices)
-                {
-                    var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(TService));
-                    if (serviceDescriptor is not null) services.Remove(serviceDescriptor);
-                    services.AddTransient(_ => mockService);
-                }
+                var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(TService));
+                if (serviceDescriptor is not null) services.Remove(serviceDescriptor);
+                services.AddTransient(_ => mockService);
             }))
         .CreateClient();
 
-        client.DefaultRequestHeaders.Authorization = BloqqerApiClient.DefaultRequestHeaders.Authorization;
+        client.DefaultRequestHeaders.Authorization =
+            BloqqerApiClient.DefaultRequestHeaders.Authorization;
+
         return client;
     }
 

@@ -1,13 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+﻿namespace Bloqqer.Database.Interceptors;
 
-namespace Bloqqer.Database.Interceptors;
-public class TimestampInterceptor : SaveChangesInterceptor
+public class BloqqerSaveChangesInterceptor : SaveChangesInterceptor
 {
-    public TimestampInterceptor() { }
+    public BloqqerSaveChangesInterceptor() { }
 
-    public override InterceptionResult<int> SavingChanges(
-        DbContextEventData eventData,
-        InterceptionResult<int> result)
+    public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
         SetTimestamps(eventData.Context);
         return base.SavingChanges(eventData, result);
@@ -43,7 +40,8 @@ public class TimestampInterceptor : SaveChangesInterceptor
             }
             else if (entry.State is EntityState.Deleted)
             {
-                entry.State = EntityState.Modified; // Always soft-delete entities
+                // Always soft-delete entities
+                entry.State = EntityState.Modified;
                 entry.Entity.IsDeleted = true;
                 entry.Entity.DeletedAt = utcNow;
             }

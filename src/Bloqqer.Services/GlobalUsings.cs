@@ -1,4 +1,6 @@
-﻿global using Bloqqer.Database.Entities;
+﻿global using Bloqqer.Core.Exceptions;
+global using Bloqqer.Core.Entities;
+global using FluentValidation;
 global using Bloqqer.Services.Dto;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.IdentityModel.Tokens;

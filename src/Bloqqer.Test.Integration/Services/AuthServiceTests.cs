@@ -1,8 +1,5 @@
-﻿using Bloqqer.Core.Exceptions;
-using Bloqqer.Services.Dto;
-using System.IdentityModel.Tokens.Jwt;
+﻿namespace Bloqqer.Test.Integration.Services;
 
-namespace Bloqqer.Test.Integration.Services;
 public class AuthServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
 {
     [Fact]

@@ -1,11 +1,11 @@
-﻿using FluentValidation;
-
-namespace Bloqqer.Services.Validators;
+﻿namespace Bloqqer.Services.Validators;
 
 public class ArticleUpdateValidator : AbstractValidator<ArticleUpdateDto>
 {
     public ArticleUpdateValidator()
     {
-        RuleFor(x => x.Content).NotEmpty().WithMessage("Content is required");
+        RuleFor(x => x.Content)
+            .NotEmpty()
+            .WithMessage("Content is required");
     }
 }

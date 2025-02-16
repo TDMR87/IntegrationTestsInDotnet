@@ -1,6 +1,4 @@
-﻿using Bloqqer.Services.Dto;
-
-namespace Bloqqer.Test.Integration.DbContext;
+﻿namespace Bloqqer.Test.Integration.DbContext;
 
 public class BloqqerDbContextTests(IntegrationTestFixture _) : IntegrationTestBase(_)
 {
@@ -171,20 +169,4 @@ public class BloqqerDbContextTests(IntegrationTestFixture _) : IntegrationTestBa
         Assert.Equal("modified content", updatedEntity.Content);
         Assert.True(originalModifiedAt < updatedEntity.ModifiedAt);
     }
-
-    //[Fact]
-    //public async Task IdentityResolutionIsEnabled_And_EfCoreObjectCacheIsUsed()
-    //{
-    //     Arrange
-    //    var entityResult = Domain.Models.Entities.Thread.Create("article title", TestUser.Id, "article content");
-    //    DbContext.Articles.Add(entityResult.Payload);
-    //    await DbContext.SaveChangesAsync();
-
-    //     Act
-    //    var e1 = await DbContext.Articles.FirstAsync();
-    //    var e2 = await DbContext.Articles.FirstAsync();
-
-    //     Assert
-    //    Assert.True(ReferenceEquals(e1, e2));
-    //}
 }

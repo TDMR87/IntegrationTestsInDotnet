@@ -5,7 +5,7 @@ using Moq;
 
 namespace Bloqqer.Test.Integration.Api;
 
-public class ErrorTests(IntegrationTestFixture Fixture) : IntegrationTestBase(Fixture)
+public class ControllerTests(IntegrationTestFixture Fixture) : IntegrationTestBase(Fixture)
 {
     [Fact]
     public async Task InvalidRoutePath_Should_ReturnNotFound()
@@ -35,7 +35,8 @@ public class ErrorTests(IntegrationTestFixture Fixture) : IntegrationTestBase(Fi
         var client = Fixture.CreateClientWithMockServices(mockArticleService.Object);
 
         // Act
-        var response = await client.GetAsync($"api/article/{Guid.NewGuid()}", TestContext.Current.CancellationToken);
+        var response = await client.GetAsync($"api/article/{Guid.NewGuid()}", 
+            TestContext.Current.CancellationToken);
 
         // Assert
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>(

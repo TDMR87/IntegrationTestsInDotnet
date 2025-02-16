@@ -1,3 +1,3 @@
-﻿namespace Bloqqer.Api.Models;
+﻿namespace Bloqqer.Api.Dto;
 
 public record LoginResponse(string Jwt);

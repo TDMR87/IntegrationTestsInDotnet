@@ -1,4 +1,4 @@
-﻿namespace Bloqqer.Database.Entities;
+﻿namespace Bloqqer.Core.Entities;
 
 public abstract class BloqqerEntityBase
 {
