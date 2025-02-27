@@ -22,9 +22,7 @@ public class AuthController(IAuthService authService, IEmailService emailService
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken = default)
     {
         var confirmationCode = await authService.RegisterAsync(new(request.Email), cancellationToken);
-
         await emailService.SendRegistrationConfirmationAsync(request.Email, confirmationCode, cancellationToken);
-
         return Ok($"Confirmation email sent to {request.Email}");
     }
 
