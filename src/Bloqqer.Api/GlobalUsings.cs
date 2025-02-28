@@ -13,3 +13,5 @@ global using Microsoft.AspNetCore.Authorization;
 global using System.Net;
 global using System.Security.Claims;
 global using Microsoft.IdentityModel.Tokens;
+global using Bloqqer.Services.Services;
+ 

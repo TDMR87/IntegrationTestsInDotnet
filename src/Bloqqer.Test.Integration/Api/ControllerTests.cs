@@ -1,9 +1,4 @@
-﻿using Bloqqer.Services.Dto;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-
-namespace Bloqqer.Test.Integration.Api;
+﻿namespace Bloqqer.Test.Integration.Api;
 
 public class ControllerTests(IntegrationTestFixture Fixture) : IntegrationTestBase(Fixture)
 {
@@ -19,7 +14,7 @@ public class ControllerTests(IntegrationTestFixture Fixture) : IntegrationTestBa
     }
 
     [Fact]
-    public async Task UnhandledExceptions_Should_Return_InternalServerErrorAndProblemDetails()
+    public async Task UnhandledExceptions_Should_Return_InternalServerError_And_ProblemDetails()
     {
         // Arrange
         var mockArticleService = new Mock<IArticleService>();

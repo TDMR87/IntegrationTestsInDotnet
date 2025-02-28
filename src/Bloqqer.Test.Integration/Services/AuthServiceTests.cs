@@ -61,13 +61,15 @@ public class AuthServiceTests(IntegrationTestFixture _) : IntegrationTestBase(_)
     }
 
     [Fact]
-    public async Task RegisterAsync_Should_CreateConfirmationCode_And_SendEmail()
+    public async Task RegisterAsync_Should_CreateConfirmationCode_InDatabase()
     {
         // Arrange
         var registrationEmail = $"{Guid.NewGuid()}@bloqqer.net";
 
         // Act
-        await AuthService.RegisterAsync(new(registrationEmail), TestContext.Current.CancellationToken);
+        await AuthService.RegisterAsync(
+            new(registrationEmail), 
+            TestContext.Current.CancellationToken);
 
         // Assert. Verify the confirmation was created in the database
         var confirmation = await DbContext.UserRegistrationConfirmations.FirstOrDefaultAsync(

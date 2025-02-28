@@ -1,5 +1,4 @@
-﻿using Bloqqer.Services.Services;
-
+﻿
 namespace Bloqqer.Api.Controllers;
 
 [Route("api/[controller]")]
@@ -7,7 +6,9 @@ namespace Bloqqer.Api.Controllers;
 public class AuthController(IAuthService authService, IEmailService emailService) : ControllerBase
 {
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Login(
+        [FromBody] LoginRequest request, 
+        CancellationToken cancellationToken = default)
     {
         var dto = await authService.LoginAsync(new(
             Email: request.Email,
@@ -19,15 +20,23 @@ public class AuthController(IAuthService authService, IEmailService emailService
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Register(
+        [FromBody] RegisterRequest request, 
+        CancellationToken cancellationToken = default)
     {
-        var confirmationCode = await authService.RegisterAsync(new(request.Email), cancellationToken);
-        await emailService.SendRegistrationConfirmationAsync(request.Email, confirmationCode, cancellationToken);
+        var confirmationCode = await authService.RegisterAsync(
+            new(request.Email), cancellationToken);
+
+        await emailService.SendRegistrationConfirmationAsync(
+            request.Email, confirmationCode, cancellationToken);
+
         return Ok($"Confirmation email sent to {request.Email}");
     }
 
     [HttpPost("register/confirm")]
-    public async Task<IActionResult> ConfirmRegistration([FromBody] RegistrationConfirmationRequest request, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> ConfirmRegistration(
+        [FromBody] RegistrationConfirmationRequest request, 
+        CancellationToken cancellationToken = default)
     {
         var dto = await authService.ConfirmRegistrationAsync(new(
             ConfirmationCode: request.ConfirmationCode, 

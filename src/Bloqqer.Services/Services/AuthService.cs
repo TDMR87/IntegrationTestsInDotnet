@@ -68,7 +68,6 @@ public class AuthService(
         }, cancellationToken);
 
         await dbContext.SaveChangesAsync( cancellationToken);
-
         return confirmationCode;
     }
 

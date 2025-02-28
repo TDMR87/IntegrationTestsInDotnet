@@ -1,4 +1,6 @@
-﻿namespace Bloqqer.Test.Integration.Api;
+﻿using Bloqqer.Services.Services;
+
+namespace Bloqqer.Test.Integration.Api;
 
 public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTestBase(Fixture)
 {
@@ -18,9 +20,8 @@ public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTe
         var loginTime = DateTime.UtcNow.AddMinutes(-1);
 
         // Act
-        var response = await BloqqerApiClient.PostAsJsonAsync("api/auth/login", new LoginRequest(
-            Email: email, 
-            Password: password), 
+        var response = await BloqqerApiClient.PostAsJsonAsync("api/auth/login", 
+            new LoginRequest(email, password), 
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -90,5 +91,38 @@ public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTe
 
         Assert.NotNull(problemDetails);
         Assert.Contains("Unexpected error", problemDetails.Detail);
+    }
+
+    [Fact]
+    public async Task Register_Should_SendConfirmationEmail_And_Return_OkResponse()
+    {
+        // Arrange
+        var mockEmailService = new Mock<IEmailService>();
+
+        mockEmailService.Setup(service => service.SendRegistrationConfirmationAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var client = Fixture.CreateClientWithMockServices(mockEmailService.Object);
+
+        var email = $"{Guid.NewGuid()}@bloqqer.net";
+
+        // Act
+        var response = await client.PostAsJsonAsync("api/auth/register", 
+            new RegisterRequest(Email: email),
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var responseContents = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        Assert.Equal(responseContents, $"Confirmation email sent to {email}");
+
+        mockEmailService.Verify(service => service.SendRegistrationConfirmationAsync(
+            email,
+            It.IsAny<string>(),
+            It.IsAny<CancellationToken>()
+        ), Times.Once);
     }
 }
