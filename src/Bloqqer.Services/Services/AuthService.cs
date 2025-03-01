@@ -1,6 +1,4 @@
-﻿using Bloqqer.Services.Services;
-
-namespace Bloqqer.Services;
+﻿namespace Bloqqer.Services;
 
 public interface IAuthService
 {
@@ -11,6 +9,7 @@ public interface IAuthService
 
 public class AuthService(
     BloqqerDbContext dbContext, 
+    IUserRegistrationConfirmationService userRegistrationConfirmationService,
     IValidator<LoginRequestDto> loginRequestValidator, 
     IValidator<RegisterRequestDto> registerRequestValidator,
     IConfiguration configuration) : IAuthService
@@ -60,21 +59,22 @@ public class AuthService(
 
         var confirmationCode = Guid.NewGuid().ToString();
 
-        await dbContext.UserRegistrationConfirmations.AddAsync(new()
-        {
-            Email = dto.Email,
-            ConfirmationCode = confirmationCode,
-            ExpiresUtc = DateTime.UtcNow.AddDays(1)
-        }, cancellationToken);
+        await userRegistrationConfirmationService.CreateAsync(new(
 
-        await dbContext.SaveChangesAsync( cancellationToken);
+            Email: dto.Email,
+            ConfirmationCode: confirmationCode,
+            ExpiresUtc: DateTime.UtcNow.AddDays(1)
+        ), cancellationToken);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
         return confirmationCode;
     }
 
     public async Task<RegisterResponseDto> ConfirmRegistrationAsync(RegistrationConfirmationRequestDto dto, CancellationToken cancellationToken = default)
     {
-        var confirmation = await dbContext.UserRegistrationConfirmations
-            .FirstOrDefaultAsync(u => u.ConfirmationCode == dto.ConfirmationCode, cancellationToken);
+        var confirmation = await userRegistrationConfirmationService.GetByConfirmationCodeAsync(
+            dto.ConfirmationCode, cancellationToken);
 
         if (confirmation is null)
         {

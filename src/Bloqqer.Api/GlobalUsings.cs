@@ -14,4 +14,6 @@ global using System.Net;
 global using System.Security.Claims;
 global using Microsoft.IdentityModel.Tokens;
 global using Bloqqer.Services.Services;
- 
+global using System.Text.Json.Serialization;
+global using FluentValidation;
+global using Bloqqer.Services.Validators;

@@ -1,7 +1,3 @@
-using System.Text.Json.Serialization;
-using FluentValidation;
-using Bloqqer.Services.Validators;
-using Bloqqer.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -10,6 +6,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IUserRegistrationConfirmationService, UserRegistrationConfirmationService>();
 builder.Services.AddExceptionHandler<BloqqerExceptionHandler>();
 builder.Services.AddValidatorsFromAssemblyContaining<ArticleCreateValidator>();
 builder.Services.AddProblemDetails();
@@ -51,4 +48,9 @@ app.UseExceptionHandler();
 app.MapControllers();
 app.Run();
 
+/// <summary>
+/// This is essential for the integration tests to be able
+/// to reference this application in the WebApplicationFactory<T>
+/// generic type parameter.
+/// </summary>
 public partial class Program;

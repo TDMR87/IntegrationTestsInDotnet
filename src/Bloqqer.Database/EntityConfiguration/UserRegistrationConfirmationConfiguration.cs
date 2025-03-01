@@ -1,6 +1,6 @@
 ﻿namespace Bloqqer.Database.EntityConfiguration;
 
-internal class UserRegistrationConfirmationConfiguration : IEntityTypeConfiguration<UserRegistrationConfirmation>
+public class UserRegistrationConfirmationConfiguration : IEntityTypeConfiguration<UserRegistrationConfirmation>
 {
     public void Configure(EntityTypeBuilder<UserRegistrationConfirmation> builder)
     {

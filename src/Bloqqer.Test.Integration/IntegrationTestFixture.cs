@@ -4,19 +4,30 @@ namespace Bloqqer.Test.Integration;
 
 public class IntegrationTestFixture
 {
+    // Test database and db user account.
+    // This exists only in the context of a test run, 
+    // so no need to keep passwords as a secret
     private readonly IContainer? DbTestContainer;
     private const string DbName = "Bloqqer.IntegrationTests";
     private const string DbUser = "sa";
     private const string DbPassword = "$trongP4ssword";
     private const int DbPort = 1433;
 
-    private const string ApiTestUserEmail = "integration.test.user@bloqqer.net";
-    private const string ApiTestUserName = "integration.test.user";
-    private const string ApiTestUserPassword = "Pa55w0rd123";
+    // User account for our test user.
+    // This exists only in the context of a test run, 
+    // so no need to keep passwords as a secret
+    public static string ApiTestUserEmail = $"user_{Guid.NewGuid()}@bloqqer.net";
+    public static string ApiTestUserName = "integration.test.user";
+    public static string ApiTestUserPassword = "Pa55w0rd123";
 
+    /// <summary>
+    /// Initializes an instance of the IntegrationTestFixture class.
+    /// This class is initialized only once at the beginning of a test run,
+    /// and is shared across all tests in the assembly.
+    /// </summary>
     public IntegrationTestFixture()
     {
-        // Create a test container database
+        // Create and start the test database container
         DbTestContainer = new ContainerBuilder()
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithPortBinding(DbPort, true)
@@ -34,7 +45,7 @@ public class IntegrationTestFixture
             $"Database={DbName};User Id={DbUser};" +
             $"Password={DbPassword};TrustServerCertificate=True";
 
-        // Create an in-memory Bloqqer.Api web application
+        // Create an in-memory Bloqqer.Api web application via WebApplicationFactory
         // and configure EF Core to connect to the test container database
         WebApplicationFactory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
@@ -42,63 +53,61 @@ public class IntegrationTestFixture
                     services.AddDbContext<BloqqerDbContext>(options => 
                         options.UseSqlServer(dbConnectionString))));
 
-        // Apply migrations to the database
+        // Apply migrations
         using var dbContext = ScopedServiceProvider.GetRequiredService<BloqqerDbContext>();
         dbContext.Database.Migrate();
 
-        // Register & login the test user
+        // Register & login the test user to get a JWT
         var authService = ScopedServiceProvider.GetRequiredService<IAuthService>();
         var confirmationCode = authService.RegisterAsync(new(ApiTestUserEmail)).Result;
         var registeredUser = authService.ConfirmRegistrationAsync(new(confirmationCode, ApiTestUserName, ApiTestUserPassword)).Result;
         var (_, Jwt) = authService.LoginAsync(new(registeredUser.Email, ApiTestUserPassword)).Result;
 
-        // Set the JWT for the HttpClient
+        // Set the JWT for the BloqqerApiClient in order to make authenticated requests to protected APIs
         BloqqerApiClient = WebApplicationFactory.CreateClient();
         BloqqerApiClient.DefaultRequestHeaders.Authorization = new("Bearer", Jwt);
     }
 
     /// <summary>
-    /// HTTP client for calling Bloqqer.Api endpoints.
+    /// HTTP client for calling Bloqqer.Api endpoints in tests.
     /// </summary>
     public HttpClient BloqqerApiClient { get; init; }
 
     /// <summary>
-    /// WebApplicationFactory for creating an instance of Bloqqer.Api as an in-memory web application.
+    /// Factory for creating instances of Bloqqer.Api as an in-memory web application.
+    /// The generic type parameter <Program> references the Program class in Bloqqer.Api
     /// </summary>
     public WebApplicationFactory<Program> WebApplicationFactory { get; private set; }
 
     /// <summary>
-    /// Service provider for resolving a scoped service from the Bloqqer.Api DI container.
+    /// Service provider that can be used in tests to resolve a scoped service from the Bloqqer.Api DI container.
     /// </summary>
     public IServiceProvider ScopedServiceProvider => WebApplicationFactory.Services.CreateScope().ServiceProvider;
 
     /// <summary>
-    /// Creates an HTTP client that replaces services in the Bloqqer.Api 
-    /// DI container with the provided implementations.
+    /// Get an instance of BloqqerApiClient configured with the specified mock service
+    /// that replaces the original service in the DI container. The client is scoped to the
+    /// test that creates it and will not interfere with other tests running at the same time.
     /// </summary>
-    /// <typeparam name="TService"></typeparam>
-    /// <param name="mockServices"></param>
-    /// <returns></returns>
-    public HttpClient CreateClientWithMockServices<TService>(
-        TService mockService) where TService : class
+    public HttpClient CreateClientWithMockServices<TService>(TService mockService) where TService : class
     {
-        var client = WebApplicationFactory.WithWebHostBuilder(builder => 
-            builder.ConfigureTestServices(services =>
+        var client = WebApplicationFactory
+            .WithWebHostBuilder(builder => builder
+            .ConfigureTestServices(services =>
             {
                 var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(TService));
                 if (serviceDescriptor is not null) services.Remove(serviceDescriptor);
                 services.AddTransient(_ => mockService);
             }))
-        .CreateClient();
+            .CreateClient();
 
-        client.DefaultRequestHeaders.Authorization =
-            BloqqerApiClient.DefaultRequestHeaders.Authorization;
+        client.DefaultRequestHeaders.Authorization = BloqqerApiClient.DefaultRequestHeaders.Authorization;
 
         return client;
     }
-
+    
     /// <summary>
-    /// Clean up resources and tear down the test container databases.
+    /// Clean up resources after all tests have ran.
     /// </summary>
     public async void DisposeAsync()
     {
