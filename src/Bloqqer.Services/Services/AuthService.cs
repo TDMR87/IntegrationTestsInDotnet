@@ -9,7 +9,7 @@ public interface IAuthService
 
 public class AuthService(
     BloqqerDbContext dbContext, 
-    IUserRegistrationConfirmationService userRegistrationConfirmationService,
+    IUserRegistrationConfirmationService confirmationService,
     IValidator<LoginRequestDto> loginRequestValidator, 
     IValidator<RegisterRequestDto> registerRequestValidator,
     IConfiguration configuration) : IAuthService
@@ -59,12 +59,11 @@ public class AuthService(
 
         var confirmationCode = Guid.NewGuid().ToString();
 
-        await userRegistrationConfirmationService.CreateAsync(new(
-
+        await confirmationService.CreateAsync(new(
             Email: dto.Email,
             ConfirmationCode: confirmationCode,
-            ExpiresUtc: DateTime.UtcNow.AddDays(1)
-        ), cancellationToken);
+            ExpiresUtc: DateTime.UtcNow.AddDays(1)), 
+            cancellationToken);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
@@ -73,7 +72,7 @@ public class AuthService(
 
     public async Task<RegisterResponseDto> ConfirmRegistrationAsync(RegistrationConfirmationRequestDto dto, CancellationToken cancellationToken = default)
     {
-        var confirmation = await userRegistrationConfirmationService.GetByConfirmationCodeAsync(
+        var confirmation = await confirmationService.GetByConfirmationCodeAsync(
             dto.ConfirmationCode, cancellationToken);
 
         if (confirmation is null)
@@ -90,6 +89,8 @@ public class AuthService(
         user = new() { Email = confirmation.Email, Username = dto.Username };
         await dbContext.Users.AddAsync(user, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        await confirmationService.DeleteAsync(confirmation.ConfirmationCode, cancellationToken);
 
         return new RegisterResponseDto(user.Id, user.Username, user.Email);
     }

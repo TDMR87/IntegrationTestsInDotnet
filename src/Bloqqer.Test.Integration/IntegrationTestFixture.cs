@@ -85,28 +85,6 @@ public class IntegrationTestFixture
     public IServiceProvider ScopedServiceProvider => WebApplicationFactory.Services.CreateScope().ServiceProvider;
 
     /// <summary>
-    /// Get an instance of BloqqerApiClient configured with the specified mock service
-    /// that replaces the original service in the DI container. The client is scoped to the
-    /// test that creates it and will not interfere with other tests running at the same time.
-    /// </summary>
-    public HttpClient CreateClientWithMockServices<TService>(TService mockService) where TService : class
-    {
-        var client = WebApplicationFactory
-            .WithWebHostBuilder(builder => builder
-            .ConfigureTestServices(services =>
-            {
-                var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(TService));
-                if (serviceDescriptor is not null) services.Remove(serviceDescriptor);
-                services.AddTransient(_ => mockService);
-            }))
-            .CreateClient();
-
-        client.DefaultRequestHeaders.Authorization = BloqqerApiClient.DefaultRequestHeaders.Authorization;
-
-        return client;
-    }
-    
-    /// <summary>
     /// Clean up resources after all tests have ran.
     /// </summary>
     public async void DisposeAsync()

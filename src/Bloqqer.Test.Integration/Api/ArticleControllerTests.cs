@@ -38,7 +38,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
 
         // Assert
         var article = await response.Content.ReadFromJsonAsync<ArticleResponse>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.IsType<ArticleResponse>(article);
@@ -54,7 +54,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
 
         // Act
         var article = await response.Content.ReadFromJsonAsync<ArticleResponse>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -88,7 +88,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
         // Act
         var articleResponse = await BloqqerApiClient.GetFromJsonAsync<ArticleResponse>(
             $"api/article/{article.Id}",
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -108,7 +108,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
         // Act
         var articleResponse = await BloqqerApiClient.GetFromJsonAsync<ArticleResponse>(
             $"api/article/{article.Id}",
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -133,7 +133,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
         // Act
         var articleResponse = await BloqqerApiClient.GetFromJsonAsync<ArticleResponse>(
             $"api/article/{article.Id}?includeDeleted=true",
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -164,7 +164,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
         // Act
         var articlesResponse = await BloqqerApiClient.GetFromJsonAsync<List<ArticleResponse>>(
             $"api/article/user/{TestUser.Id}/all",
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -185,7 +185,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
         // Act
         var articlesResponse = await BloqqerApiClient.GetFromJsonAsync<List<ArticleResponse>>(
             $"api/article/user/{user.UserId}/all",
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -200,7 +200,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
         // Arrange & Act
         var articles = await BloqqerApiClient.GetFromJsonAsync<List<ArticleResponse>>(
             $"api/article/user/{Guid.NewGuid()}/all",
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -225,7 +225,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
         // Act
         var articlesResponse = await BloqqerApiClient.GetFromJsonAsync<List<ArticleResponse>>(
             $"api/article/user/{TestUser.Id}/all?includeDeleted=true",
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         // Assert
@@ -250,7 +250,7 @@ public class ArticleControllerTests(IntegrationTestFixture _) : IntegrationTestB
 
         // Assert
         var updatedArticle = await articleResponse.Content.ReadFromJsonAsync<ArticleResponse>(
-            DisallowUnmappedMembers, TestContext.Current.CancellationToken);
+            BloqqerJsonSerializerOptions, TestContext.Current.CancellationToken);
 
         Assert.NotNull(updatedArticle);
         Assert.Equal("Updated content", updatedArticle.Content);

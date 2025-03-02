@@ -86,17 +86,17 @@ public class ArticleServiceTests(IntegrationTestFixture _) : IntegrationTestBase
             TestContext.Current.CancellationToken);
 
         // Act
-        var result = await ArticleService.GetAllByUserIdAsync(
+        var results = await ArticleService.GetAllByUserIdAsync(
             userId: user.UserId, 
             includeDeleted: false,
             cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.NotEmpty(result);
-        Assert.Contains(result, a => a.Id == article1.Id);
-        Assert.Contains(result, a => a.Id == article2.Id);
-        Assert.Equal(result.Count, DbContext.Articles.Count(a => a.CreatedById == user.UserId));
+        Assert.NotNull(results);
+        Assert.NotEmpty(results);
+        Assert.Contains(results, a => a.Id == article1.Id);
+        Assert.Contains(results, a => a.Id == article2.Id);
+        Assert.Equal(results.Count, DbContext.Articles.Count(a => a.CreatedById == user.UserId));
     }
 
     [Fact]

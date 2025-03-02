@@ -2,7 +2,7 @@
 
 namespace Bloqqer.Test.Integration.Api;
 
-public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTestBase(Fixture)
+public class AuthControllerTests(IntegrationTestFixture _) : IntegrationTestBase(_)
 {
     [Fact]
     public async Task Login_Should_ReturnLoginResponse_WithJwt()
@@ -28,7 +28,7 @@ public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTe
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(loginResponse);
@@ -57,7 +57,7 @@ public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTe
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
         var problemDetails = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(problemDetails);
@@ -75,7 +75,7 @@ public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTe
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception("Unexpected error"));
 
-        var client = Fixture.CreateClientWithMockServices(mockAuthService.Object);
+        var client = CreateClientWithMockServices(mockAuthService.Object);
 
         // Act
         var response = await client.PostAsJsonAsync("api/auth/login", 
@@ -86,7 +86,7 @@ public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTe
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
 
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(problemDetails);
@@ -105,7 +105,7 @@ public class AuthControllerTests(IntegrationTestFixture Fixture) : IntegrationTe
                 It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        var client = Fixture.CreateClientWithMockServices(mockEmailService.Object);
+        var client = CreateClientWithMockServices(mockEmailService.Object);
 
         var email = $"{Guid.NewGuid()}@bloqqer.net";
 

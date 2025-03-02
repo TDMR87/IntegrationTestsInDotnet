@@ -1,4 +1,6 @@
-﻿namespace Bloqqer.Test.Integration;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
+
+namespace Bloqqer.Test.Integration;
 
 /// <summary>
 /// Base class for each test class. Each individual test method will
@@ -32,7 +34,7 @@ public abstract class IntegrationTestBase(IntegrationTestFixture Fixture)
         ?? throw new Exception("Integration test user not found");
 
 
-    protected static readonly JsonSerializerOptions DisallowUnmappedMembers = new()
+    protected static readonly JsonSerializerOptions BloqqerJsonSerializerOptions = new()
     {
         // Fail deserialization if members do not match.
         // This will prevent us from receiving wrong data from an API response
@@ -42,4 +44,26 @@ public abstract class IntegrationTestBase(IntegrationTestFixture Fixture)
         // Ignore case when deserializing JSON to support PascalCase and camelCase
         PropertyNameCaseInsensitive = true
     };
+
+    /// <summary>
+    /// Get an instance of BloqqerApiClient configured with the specified mock service
+    /// that replaces the original service in the DI container. The client is scoped to the
+    /// test that creates it and will not interfere with other tests running at the same time.
+    /// </summary>
+    public HttpClient CreateClientWithMockServices<TService>(TService mockService) where TService : class
+    {
+        var client = Fixture.WebApplicationFactory
+            .WithWebHostBuilder(builder => builder
+            .ConfigureTestServices(services =>
+            {
+                var serviceDescriptor = services.FirstOrDefault(d => d.ServiceType == typeof(TService));
+                if (serviceDescriptor is not null) services.Remove(serviceDescriptor);
+                services.AddTransient(_ => mockService);
+            }))
+            .CreateClient();
+
+        client.DefaultRequestHeaders.Authorization = BloqqerApiClient.DefaultRequestHeaders.Authorization;
+
+        return client;
+    }
 }

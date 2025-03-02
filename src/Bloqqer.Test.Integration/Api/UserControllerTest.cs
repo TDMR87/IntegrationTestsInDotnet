@@ -19,7 +19,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var user = await response.Content.ReadFromJsonAsync<UserResponse>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(user);
@@ -44,7 +44,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var userResponse = await response.Content.ReadFromJsonAsync<UserResponse>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(userResponse);
@@ -67,7 +67,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(problemDetails);
@@ -92,7 +92,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var userResponse = await response.Content.ReadFromJsonAsync<UserResponse>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(userResponse);
@@ -115,7 +115,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(problemDetails);
@@ -149,7 +149,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var updatedUser = await response.Content.ReadFromJsonAsync<UserResponse>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(updatedUser);
@@ -171,7 +171,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(problemDetails);
@@ -202,7 +202,7 @@ public class UserControllerTest(IntegrationTestFixture Fixture) : IntegrationTes
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
 
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(problemDetails);

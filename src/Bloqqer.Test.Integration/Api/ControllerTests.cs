@@ -1,6 +1,6 @@
 ﻿namespace Bloqqer.Test.Integration.Api;
 
-public class ControllerTests(IntegrationTestFixture Fixture) : IntegrationTestBase(Fixture)
+public class ControllerTests(IntegrationTestFixture _) : IntegrationTestBase(_)
 {
     [Fact]
     public async Task InvalidRoutePath_Should_ReturnNotFound()
@@ -27,7 +27,7 @@ public class ControllerTests(IntegrationTestFixture Fixture) : IntegrationTestBa
                 It.IsAny<CancellationToken>()))
             .Throws(new Exception("Simulated exception"));
 
-        var client = Fixture.CreateClientWithMockServices(mockArticleService.Object);
+        var client = CreateClientWithMockServices(mockArticleService.Object);
 
         // Act
         var response = await client.GetAsync($"api/article/{Guid.NewGuid()}", 
@@ -35,7 +35,7 @@ public class ControllerTests(IntegrationTestFixture Fixture) : IntegrationTestBa
 
         // Assert
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>(
-            DisallowUnmappedMembers,
+            BloqqerJsonSerializerOptions,
             TestContext.Current.CancellationToken);
 
         Assert.NotNull(problemDetails);

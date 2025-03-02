@@ -9,6 +9,10 @@ public interface IUserRegistrationConfirmationService
     Task<UserRegistrationConfirmationDto> GetByConfirmationCodeAsync(
         string confirmationCode, 
         CancellationToken cancellationToken = default);
+
+    Task DeleteAsync(
+        string confirmationCode,
+        CancellationToken cancellationToken = default);
 }
 
 public class UserRegistrationConfirmationService(BloqqerDbContext dbContext) : IUserRegistrationConfirmationService
@@ -46,5 +50,15 @@ public class UserRegistrationConfirmationService(BloqqerDbContext dbContext) : I
                 urc.ExpiresUtc))
             .FirstOrDefaultAsync(cancellationToken)
             ?? throw new BloqqerNotFoundException("Confirmation code not found");
+    }
+
+    public async Task DeleteAsync(string confirmationCode, CancellationToken cancellationToken = default)
+    {
+        var entity = dbContext.UserRegistrationConfirmations
+            .FirstOrDefault(urc => urc.ConfirmationCode == confirmationCode)
+            ?? throw new BloqqerNotFoundException("Confirmation code not found");
+
+        dbContext.UserRegistrationConfirmations.Remove(entity);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
