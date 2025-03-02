@@ -1,6 +1,6 @@
 # Integration Tests In .NET
 
-This is sample project showcasing one of the ways to implement integration tests for a .NET web api project.
+This is example project showcasing one of the ways to implement integration tests for a .NET web api project.
 
 ## Goals
 The following are the high level goals we want to accomplish:
