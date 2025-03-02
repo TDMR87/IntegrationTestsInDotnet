@@ -1,6 +1,6 @@
 # Integration Tests In .NET
 
-This is sample project showcasing how to implement integration tests for a .NET web api project.
+This is sample project showcasing one of the ways to implement integration tests for a .NET web api project.
 
 ## Goals
 The following are the high level goals we want to accomplish:
@@ -330,7 +330,7 @@ Remember, the HttpClient we configured in the IntegrationTestFixture uses the re
 
 Fortunately, that it made possible by the [ConfigureTestServices](https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-9.0#inject-mock-services) method and the WebApplicationFactory. That method will return a HttpClient from the DI container, but overridden services are scoped to the calling test only. In order to make using this functionality available for tests, let's add a helper method to the IntegrationTestBase so that it's available in every test.
 
-```charp
+```csharp
 public HttpClient CreateClientWithMockServices<TService>(TService mockService) where TService : class
 {
     var client = WebApplicationFactory
@@ -353,7 +353,7 @@ This helper creates a new instance of a HttpClient from the WebApplicationFactor
 
 This is an example of a test that requires a mocked service:
 
-```charp
+```csharp
 [Fact]
 public async Task Register_Should_SendConfirmationEmail_And_Return_OkResponse()
 {
@@ -390,7 +390,7 @@ public async Task Register_Should_SendConfirmationEmail_And_Return_OkResponse()
 
 This test checks that the SendRegistrationConfirmationAsync method is called during the registration process. Obviously, we don't want to call the real implementation of the SendRegistrationConfirmationAsync because we don't want to be sending any emails anywhere. Therefore, we mock the method, and use the helper we created previously to get a HttpClient where the mock overrides the real service implementation.
 
-```charp
+```csharp
 [Fact]
 public async Task Register_Should_SendConfirmationEmail_And_Return_OkResponse()
 {
@@ -402,8 +402,8 @@ public async Task Register_Should_SendConfirmationEmail_And_Return_OkResponse()
 }
 ```
 
-## The end
-You can easily take this project for a spin locally. It is completely self-contained. The only thing required on your machine is Docker, so that IntegrationTestFixture is able to create the database container. That's it.
+## Final words
+You can easily take this project for a spin locally. The only thing required on your machine is Docker, so that IntegrationTestFixture is able to create the database container. That's it.
 
 The test project includes many more tests, many of them modifying the database, in order to showcase that you can run them all in parallel without problems even though a shared database is used.
 
