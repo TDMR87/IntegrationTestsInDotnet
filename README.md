@@ -223,8 +223,6 @@ public async Task Login_Should_ReturnLoginResponse_WithJwt()
 }
 ```
 
-The following is an example of a test that checks whether our global exception handling works in the API layer.
-
 ## Testing services
 
 The following is an example of a test that checks that all the created articles of a user are returned. Because our test user might have been creating an _n_ amount of articles across all tests, we create a new unique user. This way we can scope the test for that user only, and other tests running in parallel creating articles in the same database don't affect the results.
