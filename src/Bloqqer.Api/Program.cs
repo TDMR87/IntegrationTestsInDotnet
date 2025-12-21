@@ -46,10 +46,3 @@ app.UseAuthorization();
 app.UseExceptionHandler();
 app.MapControllers();
 app.Run();
-
-/// <summary>
-/// This is essential for the integration tests to be able
-/// to reference this application in the WebApplicationFactory<T>
-/// generic type parameter.
-/// </summary>
-public partial class Program;

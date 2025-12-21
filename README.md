@@ -86,15 +86,19 @@ WebApplicationFactory = new WebApplicationFactory<Program>()
     options.UseSqlServer(dbConnectionString))));
 ```
 
-The generic type parameter in ```WebApplicationFactory<Program>``` is the entry point class in our API. For this to work, we have added the class declaration at the end our API ```Program.cs``` file. Otherwise we wouldn't be able to reference the Program class in our test project, since we're using top-level statements in the API _Program.cs_ file.
+The generic type parameter in ```WebApplicationFactory<Program>``` is the entry point class in our API using top-level statements. 
+
+> NOTE: For this to work in .NET versions prior to .NET 10, you need to add an explicit class declaration inside the API's ```Program.cs``` file. Otherwise you won't be able to reference the Program class in our test project, since it's internal by default when using top-level statements in the API _Program.cs_ file.
 
 ```csharp
 // ...
 
 app.Run();
 
-public partial class Program;
+public partial class Program; // <-- Add this
 ```
+
+> Starting with .NET 10, adding the 'public partial class Program' is no longer required
 
 After configuring the WebApplicationFactory, we apply migrations to the database so that we have all the tables and columns ready.
 
